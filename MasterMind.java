@@ -15,6 +15,13 @@ public class MasterMind {
 
             try {
                 quess = scanner.nextInt();
+                String digits = Integer.toString(quess);
+
+                if (digits.length() != 4) {
+                    System.out.println("Niepoprawna długość kodu, spróbuj jeszcze raz.");
+                    scanner.next();
+                }
+
                 if (quess == 1993) {
                     isGuessed = true;
                     System.out.println("Gratulacje, odgadłeś ukryty kod.");
