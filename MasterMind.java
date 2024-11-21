@@ -1,3 +1,4 @@
+import java.util.Random;
 import java.util.Scanner;
 
 public class MasterMind {
@@ -6,23 +7,34 @@ public class MasterMind {
         System.out.println("Zgadnij 4 cyfrowy kod składający się z cyfr od 0 do 9");
 
         Scanner scanner = new Scanner(System.in);
+        Random random = new Random();
+
+        int maxDigit = 9;
+        int codeLength = 4;
+        StringBuilder secretCode = new StringBuilder();
+
+        for (int i = 0; i < codeLength; i++) {
+            secretCode.append(random.nextInt(maxDigit));
+        }
         
-        int quess = 0;
+        System.out.println("Wygenerowany kod: " + secretCode);
+
+        int guess = 0;
         boolean isGuessed = false;
 
         while (!isGuessed) {
             System.out.println("Wprowadź swoją próbę: ");
 
             try {
-                quess = scanner.nextInt();
-                String digits = Integer.toString(quess);
+                guess = scanner.nextInt();
+                String guessStr = Integer.toString(guess);
 
-                if (digits.length() != 4) {
+                if (guessStr.length() != codeLength) {
                     System.out.println("Niepoprawna długość kodu, spróbuj jeszcze raz.");
                     scanner.next();
                 }
 
-                if (quess == 1993) {
+                if (guessStr.equals(secretCode.toString())) {
                     isGuessed = true;
                     System.out.println("Gratulacje, odgadłeś ukryty kod.");
                 } else {
@@ -34,7 +46,7 @@ public class MasterMind {
             }
         }
 
-        System.out.println("Twoja próba: " + quess);
+        System.out.println("Twoja próba: " + guess);
 
         scanner.close();
  }
