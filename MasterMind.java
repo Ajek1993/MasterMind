@@ -9,7 +9,7 @@ public class MasterMind {
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
 
-        int maxDigit = 9;
+        int maxDigit = 10;
         int codeLength = 4;
         StringBuilder secretCode = new StringBuilder();
 
