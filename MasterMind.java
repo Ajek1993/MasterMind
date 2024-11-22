@@ -1,5 +1,12 @@
+import java.util.Arrays;
 import java.util.Random;
 import java.util.Scanner;
+
+class WrongLongException extends Exception {
+    public WrongLongException(String message) {
+        super(message);
+    }
+}
 
 public class MasterMind {
     public static void main(String[] args) {
@@ -11,44 +18,61 @@ public class MasterMind {
 
         int maxDigit = 10;
         int codeLength = 4;
-        StringBuilder secretCode = new StringBuilder();
+
+        int[] secretCode = new int[codeLength];
+        int[] userCode = new int[codeLength];
 
         for (int i = 0; i < codeLength; i++) {
-            secretCode.append(random.nextInt(maxDigit));
+            secretCode[i] = random.nextInt(maxDigit);
         }
-        
-        System.out.println("Wygenerowany kod: " + secretCode);
 
-        int guess = 0;
+        System.out.println("Wygenerowany kod: " + Arrays.toString(secretCode));
+
         boolean isGuessed = false;
 
         while (!isGuessed) {
             System.out.println("Wprowadź swoją próbę: ");
 
             try {
-                guess = scanner.nextInt();
-                String guessStr = Integer.toString(guess);
+                String guess = scanner.nextLine().trim();
 
-                if (guessStr.length() != codeLength) {
-                    System.out.println("Niepoprawna długość kodu, spróbuj jeszcze raz.");
-                    scanner.next();
+                if (guess.length() != codeLength) {
+                    throw new WrongLongException(
+                            "Niepoprawna długość kodu, kod powinien mieć " + codeLength + " cyfry.");
                 }
 
-                if (guessStr.equals(secretCode.toString())) {
+                for (int i = 0; i < codeLength; i++) {
+                    char currentChar = guess.charAt(i);
+
+                    if (Character.isDigit(currentChar)) {
+                        userCode[i] = Character.getNumericValue(currentChar);
+
+                    } else {
+                        throw new NumberFormatException("Kod zawiera niepoprawne znaki. Wprowadź tylko cyfry.");
+                    }
+
+                }
+
+                if (Arrays.equals(userCode, secretCode)) {
                     isGuessed = true;
                     System.out.println("Gratulacje, odgadłeś ukryty kod.");
                 } else {
                     System.out.println("Niepoprawny kod, spróbuj jeszcze raz.");
                 }
+
+                System.out.println("Twoja próba: " + Arrays.toString(userCode));
+
+            } catch (WrongLongException e) {
+                System.out.println(e.getMessage());
+            } catch (NumberFormatException e) {
+                System.out.println(e.getMessage());
             } catch (Exception e) {
-                System.out.println("Proszę wprowadzić liczbę.");
-                scanner.next();
+                System.out.println("Nieoczekiwany błąd: " + e.getMessage());
             }
+
         }
 
-        System.out.println("Twoja próba: " + guess);
-
         scanner.close();
- }
-    
+    }
+
 }
