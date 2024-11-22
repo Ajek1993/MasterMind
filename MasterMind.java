@@ -9,9 +9,16 @@ class WrongLongException extends Exception {
 }
 
 public class MasterMind {
+
+    private static final String MAGENTA = "\033[35m";
+    private static final String RED = "\033[31m";
+    private static final String GREEN = "\033[32m";
+    private static final String BLUE = "\033[34m";
+    private static final String RESET = "\033[0m"; // Reset koloru
+
     public static void main(String[] args) {
-        System.out.println("Witaj w grze MasterMind!");
-        System.out.println("Zgadnij 4 cyfrowy kod składający się z cyfr od 0 do 9");
+        System.out.println(MAGENTA + "Witaj w grze MasterMind!" + RESET);
+        System.out.println(MAGENTA + "Zgadnij 4 cyfrowy kod składający się z cyfr od 0 do 9" + RESET);
 
         Scanner scanner = new Scanner(System.in);
         Random random = new Random();
@@ -26,19 +33,20 @@ public class MasterMind {
             secretCode[i] = random.nextInt(maxDigit);
         }
 
-        System.out.println("Wygenerowany kod: " + Arrays.toString(secretCode));
-
         boolean isGuessed = false;
+        int shots = 0;
+
+        long startTime = System.currentTimeMillis();
 
         while (!isGuessed) {
-            System.out.println("Wprowadź swoją próbę: ");
+            System.out.print(GREEN + "Wprowadź swoją próbę: " + RESET);
 
             try {
                 String guess = scanner.nextLine().trim();
 
                 if (guess.length() != codeLength) {
-                    throw new WrongLongException(
-                            "Niepoprawna długość kodu, kod powinien mieć " + codeLength + " cyfry.");
+                    throw new WrongLongException(RED +
+                            "Niepoprawna długość kodu, kod powinien mieć " + codeLength + " cyfry." + RESET);
                 }
 
                 for (int i = 0; i < codeLength; i++) {
@@ -48,11 +56,13 @@ public class MasterMind {
                         userCode[i] = Character.getNumericValue(currentChar);
 
                     } else {
-                        throw new NumberFormatException("Kod zawiera niepoprawne znaki. Wprowadź tylko cyfry.");
+                        throw new NumberFormatException(
+                                RED + "Kod zawiera niepoprawne znaki. Wprowadź tylko cyfry." + RESET);
                     }
 
                 }
 
+                shots++;
                 int correctPosition = 0;
                 int correctDigit = 0;
 
@@ -82,25 +92,24 @@ public class MasterMind {
 
                 if (Arrays.equals(userCode, secretCode)) {
                     isGuessed = true;
-                    System.out.println("Gratulacje, odgadłeś ukryty kod.");
+                    long endTime = System.currentTimeMillis();
+                    long duration = endTime - startTime;
+                    long seconds = duration / 1000;
+                    System.out.println(BLUE + "Gratulacje, odgadłeś ukryty kod. Liczba prób: " + shots + RESET);
+                    System.out.println(BLUE + "Czas trwania gry: " + seconds + " sekund." + RESET);
                 } else {
-
-                    System.out.println("Poprawne cyfry na poprawnej pozycji: " + correctPosition);
-                    System.out.println("Poprawne cyfry na niepoprawnej pozycji: " + correctDigit);
+                    System.out.println(BLUE + "Poprawne cyfry na poprawnej pozycji: " + correctPosition + RESET);
+                    System.out.println(BLUE + "Poprawne cyfry na niepoprawnej pozycji: " + correctDigit + RESET);
                 }
 
-                System.out.println("Twoja próba: " + Arrays.toString(userCode));
-
-            } catch (WrongLongException e) {
-                System.out.println(e.getMessage());
             } catch (NumberFormatException e) {
                 System.out.println(e.getMessage());
+            } catch (WrongLongException e) {
+                System.out.println(e.getMessage());
             } catch (Exception e) {
-                System.out.println("Nieoczekiwany błąd: " + e.getMessage());
+                System.out.println(RED + "Nieoczekiwany błąd: " + e.getMessage() + RESET);
             }
-
         }
-
         scanner.close();
     }
 
