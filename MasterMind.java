@@ -53,11 +53,40 @@ public class MasterMind {
 
                 }
 
+                int correctPosition = 0;
+                int correctDigit = 0;
+
+                boolean[] usedInSecret = new boolean[codeLength];
+                boolean[] usedInGuess = new boolean[codeLength];
+
+                for (int i = 0; i < codeLength; i++) {
+                    if (userCode[i] == secretCode[i]) {
+                        correctPosition++;
+                        usedInGuess[i] = true;
+                        usedInSecret[i] = true;
+                    }
+                }
+
+                for (int i = 0; i < codeLength; i++) {
+                    if (!usedInGuess[i]) {
+                        for (int j = 0; j < codeLength; j++) {
+                            if (!usedInSecret[j] && userCode[i] == secretCode[j]) {
+                                correctDigit++;
+                                usedInSecret[j] = true;
+                                usedInGuess[i] = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+
                 if (Arrays.equals(userCode, secretCode)) {
                     isGuessed = true;
                     System.out.println("Gratulacje, odgadłeś ukryty kod.");
                 } else {
-                    System.out.println("Niepoprawny kod, spróbuj jeszcze raz.");
+
+                    System.out.println("Poprawne cyfry na poprawnej pozycji: " + correctPosition);
+                    System.out.println("Poprawne cyfry na niepoprawnej pozycji: " + correctDigit);
                 }
 
                 System.out.println("Twoja próba: " + Arrays.toString(userCode));
